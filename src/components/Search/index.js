@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, TextInput, FlatList, AsyncStorage  } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, AsyncStorage  } from 'react-native';
 import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -68,10 +68,10 @@ class Search extends Component {
 
     _renderItem({ item }) {
         if (item.media_type === "movie") {
-            return <ListItem item={item} column />
+            return <ListItem item={item} db='movie' column />
         }
         else if (item.media_type === "tv") {
-            return <ListItem item={item} column />
+            return <ListItem item={item} db='tv' column />
         }
         // } else if (r.media_type === 'person') {
         //     return <View>
@@ -108,5 +108,9 @@ class Search extends Component {
         )
     }
 }
+
+const styles = StyleSheet.create({
+
+});
 
 export default Search;
