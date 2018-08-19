@@ -24,20 +24,18 @@ class Feature extends Component {
     }
     async componentDidMount() {
         this.setState({ loading: true})
-        const movies = await ajax.fetchMovies(this.props.type);
+        const movies = await ajax.fetchMovies(this.props.db, this.props.type);
         this.setState({
             movies: movies.results,
             loading: false
         });
-        console.log(movies);
-
     }
 
-    _renderItem({ item }) {
-        return (
-            <ListItem style={styles.item} item={item} loading={loading}/>
-        );
-    }
+    // _renderItem({ item }) {
+    //     return (
+    //         <ListItem style={styles.item} item={item} loading={loading} movie/>
+    //     );
+    // }
 
     goToListView = () => {
         this.props.navigation.navigate('List', {
@@ -74,7 +72,7 @@ class Feature extends Component {
                     keyExtractor={(item, index) => item.id.toString()}
                     // renderItem={this._renderItem}
                     renderItem={({ item }) => (
-                        <ListItem style={styles.item} item={item}/>
+                        <ListItem style={styles.item} item={item} db={this.props.db}/>
                     )}
                 />
             </View>

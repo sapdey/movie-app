@@ -8,36 +8,39 @@ import Title from '../common/Title';
 import Starrating from '../common/Starrating';
 import HR from '../common/hr';
 import Shimmer from '../common/Shimmer';
+import YouTubeUI from "../common/Youtube";
+import Genre from '../common/Genre';
 
 class Detail extends Component {
-    // static navigationOptions = ({ navigation }) => {
-    //     return {
-    //         title: navigation.getParam('title', 'Details')
-    //     };
-    // };
-    state = {
-        movie: {},
-        credits: {},
-        loading: false,
-        director: ' ',
+   
+    constructor(props) {
+        super(props);
+        this.state = {
+            movie: this.props.navigation.state.params.item,
+            db: this.props.navigation.state.params.db,
+            credits: {},
+            castLoading: true,
+            directorLoading: true,
+            videosLoading: true,
+            director: ' ',
+            videos: []
+        }
+
     }
     async componentDidMount() {
-        this.setState({ loading: true });
-        const id = this.props.navigation.state.params.id;
-        const movie = await ajax.fetchMovies(id);
-        const credits = await ajax.fetchMovies(id + '/credits')
-        this.setState({ movie, credits, loading: false }, () => {
+        // this.setState({ castLoading: true, directorLoading: true });
+        const credits = await ajax.fetchMovies(this.state.db, this.state.movie.id + '/credits');
+        this.setState({ credits, castLoading: false }, () => {
             this.getDirector();
-            console.log(this.state.movie);
         });
-        console.log('done');
-
+        const videos = await ajax.fetchMovies(this.state.db, this.state.movie.id + '/videos');
+        this.setState({ videos: videos.results, videosLoading: false });
     }
 
     _renderItem({ item }) {
         return (
             <TouchableOpacity style={styles.cast}>
-                <Shimmer autoRun={true} visible={true}>
+                <Shimmer visible={true}>
                     <Img src={item.profile_path} />
                 </Shimmer>
             </TouchableOpacity>
@@ -48,82 +51,55 @@ class Detail extends Component {
         if (this.state.credits.crew) {
             await this.state.credits.crew.forEach((item) => {
                 if (item.job === 'Director') {
-                    console.log('new', item);
-                    this.setState({ director: item.name });
+                    this.setState({ director: item.name, directorLoading: false });
                 }
             })
         }
     }
 
-    // async getDirector() {
-    //     if (this.state.credits.crew) {
-    //         for (const item of this.state.credits.crew) {
-    //             if (item.job === 'Director') {
-    //                 await console.log('new', item);
-    //                 await this.setState({ director: item.name });
-    //             }
-    //         }
-    //     }
-    // }
-
     render() {
-        let { belongs_to_collection = {}, backdrop_path = '', poster_path = '', title = '', runtime, vote_average, overview = '', genres = [] } = this.state.movie;
-        let { credits: { cast }, director, loading } = this.state;
-        console.log(this.state.credits);
+        let { belongs_to_collection = {}, backdrop_path, poster_path, title, runtime, vote_average, overview, genre_ids, release_date, original_name } = this.state.movie;
+        let { credits: { cast }, director, movieLoading, directorLoading, videos, videosLoading } = this.state;
 
-        let { imageContainer, posterImage, mainContainer, titleContainer, titleLine, description, genre, genress } = styles
+        let { imageContainer, posterImage, mainContainer, titleContainer, titleLine, description, genre, genress, videoContainer } = styles
         return (
             <View>
                 <ScrollView>
-                    <Shimmer visible={!loading} style={[imageContainer, { opacity: 1 }]}>
-                        <View style={imageContainer}>
-                            <Img src={backdrop_path} />
-                        </View>
-                    </Shimmer>
+                    <View style={imageContainer}>
+                        <Img src={backdrop_path} />
+                    </View>
                     <View style={mainContainer}>
                         <View style={titleContainer}>
                             <View style={posterImage}>
-                                <Shimmer visible={!loading} style={[posterImage, { borderRadius: 0 }]}>
-                                    <Img src={poster_path} />
-                                </Shimmer>
+                                <Img src={poster_path} />
                             </View>
                             <View style={{ flex: 1 }}>
-                                <Shimmer visible={!loading} style={{ height: 18, marginTop: 5 }} autoRun={true} visible={!loading}>
-                                    <Title lines={2} style={titleLine} type="title" text={title} />
-                                </Shimmer>
-                                <Shimmer visible={!loading} style={{ height: 12, marginTop: 2, width: 50 }}>
-                                    {runtime && <Text>{runtime + 'min'}</Text>}
-                                </Shimmer>
-                                <Shimmer visible={!loading} style={{ height: 12, marginTop: 2, width: 130 }}>
-                                    {vote_average && <Starrating votes={vote_average} />}
-                                </Shimmer>
+                                <Title lines={2} style={titleLine} type="title" text={title ? title : original_name} />
+                                {runtime && <Text>{runtime + 'min'}</Text>}
+                                <Starrating votes={vote_average} />
                                 <View style={genress}>
                                     {/* <Text> */}
-                                    {
-                                        genres.length > 0 && genres.map(item => (
-                                            <Text key={item.id} style={genre}>{item.name}</Text>
-                                        ))
-                                    }
+                                    <Genre ids={genre_ids} />
                                     {/* </Text> */}
                                 </View>
                             </View>
 
                         </View>
                         <View style={description}>
-                            <Shimmer visible={!loading} style={{ height: 18, marginTop: 5, width: '100%' }} autoRun={true} visible={!loading}></Shimmer>
-                            <Shimmer visible={!loading} style={{ height: 18, marginTop: 5, width: '100%' }} autoRun={true} visible={!loading}></Shimmer>
-                            <Shimmer visible={!loading} style={{ height: 18, marginTop: 5, width: '100%' }} autoRun={true} visible={!loading}></Shimmer>
-                            <Shimmer visible={!loading} style={{ height: 18, marginTop: 5, width: '100%' }} autoRun={true} visible={!loading}></Shimmer>
-                            <Text>{overview}</Text>
+                            <Text style={{ fontSize: 16, textAlign: 'justify' }}>{overview}</Text>
                         </View>
                         <HR />
                         <View>
-                            <Text>Director</Text>
-                            <Text>{director}</Text>
+                            <Text style={{ fontSize: 18 }}>Release Date</Text>
+                            <Text style={{ fontSize: 16 }}>{release_date}</Text>
+                            <Text style={{ fontSize: 18, marginTop: 5 }}>Director</Text>
+                            <Shimmer visible={!directorLoading} style={{ height: 12, marginTop: 2, width: 130 }}>
+                                <Text style={{ fontSize: 16 }}>{director}</Text>
+                            </Shimmer>
                         </View>
                         <HR />
                         <View>
-                            <Text>Casts</Text>
+                            <Text style={{ fontSize: 18, marginBottom: 5 }}>Casts</Text>
                             <FlatList
                                 data={cast}
                                 horizontal
@@ -132,6 +108,24 @@ class Detail extends Component {
                                 renderItem={this._renderItem}
                             />
                         </View>
+                        <HR />
+
+                        <View>
+                            <Text style={{ fontSize: 18, marginBottom: 5 }}>Trailer</Text>
+                            <ScrollView horizontal>
+                                {videos.map(item => (
+                                    <View key={item.id} style={videoContainer}>
+                                        <Shimmer visible={!videosLoading}>
+                                            <YouTubeUI
+                                                id={item.key}
+                                            />
+                                        </Shimmer>
+                                    </View>
+                                ))}
+                                 
+                            </ScrollView>
+                        </View>
+                        <HR />
                     </View>
                 </ScrollView>
             </View>
@@ -172,8 +166,8 @@ const styles = StyleSheet.create({
         // paddingRight: 20
     },
     titleLine: {
-        // flex: 1,
         // flexWrap: 'wrap'
+        // flex: 1,
     },
     genress: {
         flexDirection: 'row',
@@ -186,7 +180,6 @@ const styles = StyleSheet.create({
     },
     description: {
         backgroundColor: '#ffffff',
-        textAlign: 'center'
         // height: '100%'
     },
     cast: {
@@ -196,6 +189,13 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         marginRight: 5,
         borderRadius: 50,
+        overflow: 'hidden'
+    },
+    videoContainer: {
+        width: 300,
+        height: 200,
+        marginRight: 10,
+        borderRadius: 5,
         overflow: 'hidden'
     }
 });

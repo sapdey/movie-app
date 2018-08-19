@@ -5,6 +5,7 @@ import { createStackNavigator, SafeAreaView } from 'react-navigation';
 import Home from './Home/';
 import Detail from './Detail';
 import ListView from './List';
+import Search from './Search';
 
 class App extends Component {
 
@@ -32,7 +33,7 @@ const RootStack = createStackNavigator(
             screen: Home,
             navigationOptions: () => ({
                 headerMode: 'none',
-                header: null,
+                // header: null,
             })
         },
         Detail: {
@@ -41,6 +42,10 @@ const RootStack = createStackNavigator(
         },
         List: {
             screen: ListView
+        },
+        Search: {
+            screen: Search,
+            header: null
         }
     },
     {

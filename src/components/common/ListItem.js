@@ -8,29 +8,28 @@ import Img from './Image';
 import Title from './Title';
 import Starrating from './Starrating';
 import Shimmer from './Shimmer';
+import { movieGenres } from '../../constants';
+import Genre from './Genre';
 
 class ListItem extends PureComponent {
     static propTypes = {
         item: PropTypes.object.isRequired
     }
 
-    navigateToDetail = (id, title) => () => {
-        this.props.navigation.navigate('Detail', {
-            id,
-            title
-        });
+    navigateToDetail = (item) => () => {
+        this.props.navigation.navigate('Detail', { item, db: this.props.db });
     }
 
     render() {
-        let { column } = this.props;
-        let { id, title, poster_path, vote_average } = this.props.item;
-        let { container, image, titleView, titleLine, columnContainer, columnImage, description } = styles;
+        let { column, item } = this.props;
+        let { id, title, poster_path, vote_average, genre_ids, original_title, original_name } = item;
+        let { container, image, titleView, titleLine, columnContainer, columnImage, description, genress, genre } = styles;
 
         return (
             <View>
                 {!column
                     ? <View style={container}>
-                        <TouchableOpacity onPress={this.navigateToDetail(id, title)}>
+                        <TouchableOpacity onPress={this.navigateToDetail(item)}>
                             <View style={image}>
                                 <Shimmer visible={poster_path !== ''} style={[image, { borderRadius: 0 }]}>
                                     <Img src={poster_path} />
@@ -38,14 +37,14 @@ class ListItem extends PureComponent {
                             </View>
                             <View style={titleView}>
                                 <Shimmer visible={title !== ''} style={{ height: 18, marginTop: 5 }} ></Shimmer>
-                                <Title lines={2} style={titleLine} type="title" text={title} />
+                                <Title lines={2} style={titleLine} type="title" text={title ? title : original_name} />
                             </View>
                             <Shimmer visible={vote_average !== 0} style={{ height: 18, marginTop: 5, width: 130 }} >
                                 <Starrating votes={vote_average} />
                             </Shimmer>
                         </TouchableOpacity>
                     </View>
-                    : <TouchableOpacity onPress={this.navigateToDetail(id, title)}>
+                    : <TouchableOpacity onPress={this.navigateToDetail(item)}>
                         <View style={{ backgroundColor: 'transparent', pointerEvents: 'box-none' }}>
                             <View style={[image, columnImage]}>
                                 <Img src={poster_path} />
@@ -54,8 +53,13 @@ class ListItem extends PureComponent {
                                 <View style={{ flex: 3 }}>
                                 </View>
                                 <View style={description}>
-                                    <Title lines={2} style={titleLine} type="stitle" text={title} />
+                                    <Title lines={2} style={titleLine} type="stitle" text={title ? title : original_name} />
                                     <Starrating votes={vote_average} />
+                                    <View style={genress}>
+                                        {/* <Text> */}
+                                        <Genre ids={genre_ids} />
+                                        {/* </Text> */}
+                                    </View>
                                 </View>
                             </View>
                         </View>
@@ -101,22 +105,23 @@ const styles = StyleSheet.create({
         flex: 1,
         flexWrap: 'wrap'
     },
-// Column View -->
+    // Column View -->
     columnContainer: {
         backgroundColor: '#fff',
-        height: 100,
+        height: 125,
         // width: '100%',
         borderColor: 'rgba(0,0,0,.04)',
         borderWidth: 1,
         borderStyle: 'solid',
-        marginTop: 50,
+        marginTop: 25,
         marginBottom: 10,
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginLeft: 10,
         marginRight: 10,
-        overflow: 'visible'
+        overflow: 'visible',
+        borderRadius: 10
     },
     columnImage: {
         width: 84,
@@ -127,6 +132,15 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginRight: 10,
         zIndex: 1
+    },
+    genress: {
+        flexDirection: 'row',
+        // flexWrap: 'wrap'
+    },
+    genre: {
+        backgroundColor: '#e7e7e7',
+        padding: 5,
+        marginRight: 5
     },
     description: {
         flex: 7

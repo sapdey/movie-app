@@ -12,18 +12,24 @@ class Starrating extends PureComponent {
         let { votes } = this.props;
         let { starrating, star } = styles;
         return (
-            <View style={starrating}>
-                <Text>{votes + '/10'}</Text>
-                <StarRating
-                    disabled={false}
-                    maxStars={5}
-                    rating={votes / 2}
-                    number={5}
-                    selectedStar={() => { }}
-                    starStyle={star}
-                    fullStarColor="#FFD700"
-                    emptyStarColor="#eee"
-                />
+            <View>
+                {
+                    votes === 0
+                        ? <Text>No rating</Text>
+                        : <View style={starrating}>
+                            <Text>{votes + '/10'}</Text>
+                            <StarRating
+                                disabled={false}
+                                maxStars={5}
+                                rating={votes / 2}
+                                number={5}
+                                selectedStar={() => { }}
+                                starStyle={star}
+                                fullStarColor="#FFD700"
+                                emptyStarColor="#eee"
+                            />
+                        </View>
+                }
             </View>
         )
     }

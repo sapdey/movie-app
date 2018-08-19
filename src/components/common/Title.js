@@ -14,13 +14,13 @@ Title.propTypes = {
 
 const styles = StyleSheet.create({
     heading: {
-        fontSize: 24
+        fontSize: 26
     },
     title: {
-        fontSize: 18
+        fontSize: 22
     },
     stitle: {
-        fontSize: 14
+        fontSize: 18
     }
 });
 

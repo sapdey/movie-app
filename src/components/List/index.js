@@ -18,12 +18,13 @@ class ListView extends PureComponent {
 
     _renderItem({ item }) {
         return (
-            <ListItem item={item} column />
+            <ListItem item={item} column db='movie'/>
         );
     }
+
     handleLoadMore = async () => {
         let type = this.props.navigation.getParam('type', 'search');
-        let newMovies = await ajax.fetchMovies(type, this.count);
+        let newMovies = await ajax.fetchMovies('movie', type, this.count);
 
         this.setState({
             movies: this.state.movies.concat(...newMovies.results),
@@ -31,6 +32,7 @@ class ListView extends PureComponent {
             this.count++;
         })
     }
+
     render() {
         let { movies } = this.state;
         return (
