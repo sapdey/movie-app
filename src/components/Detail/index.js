@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
+import { withNavigation } from 'react-navigation';
+
 
 import ajax from '../../ajax';
 import Img from '../common/Image';
@@ -12,7 +14,7 @@ import YouTubeUI from "../common/Youtube";
 import Genre from '../common/Genre';
 
 class Detail extends Component {
-   
+
     constructor(props) {
         super(props);
         this.state = {
@@ -25,8 +27,8 @@ class Detail extends Component {
             director: ' ',
             videos: []
         }
-
     }
+
     async componentDidMount() {
         // this.setState({ castLoading: true, directorLoading: true });
         const credits = await ajax.fetchMovies(this.state.db, this.state.movie.id + '/credits');
@@ -37,15 +39,15 @@ class Detail extends Component {
         this.setState({ videos: videos.results, videosLoading: false });
     }
 
-    _renderItem({ item }) {
-        return (
-            <TouchableOpacity style={styles.cast}>
-                <Shimmer visible={true}>
-                    <Img src={item.profile_path} />
-                </Shimmer>
-            </TouchableOpacity>
-        )
-    }
+    // _renderItem({ item }) {
+    //     return (
+    //         <TouchableOpacity style={styles.cast} onPress={this.navigateToPerson(item)} >
+    //             <Shimmer visible={true}>
+    //                 <Img src={item.profile_path} />
+    //             </Shimmer>
+    //         </TouchableOpacity>
+    //     )
+    // }
 
     async getDirector() {
         if (this.state.credits.crew) {
@@ -55,6 +57,10 @@ class Detail extends Component {
                 }
             })
         }
+    }
+
+    navigateToPerson = (item) => () => {
+        this.props.navigation.navigate('Person', { item });
     }
 
     render() {
@@ -105,24 +111,31 @@ class Detail extends Component {
                                 horizontal
                                 showsHorizontalScrollIndicator={false}
                                 keyExtractor={(item, index) => item.id.toString()}
-                                renderItem={this._renderItem}
+                                renderItem={({ item }) => (
+                                    <TouchableOpacity style={styles.cast} onPress={this.navigateToPerson(item)} >
+                                        <Shimmer visible={true}>
+                                            <Img src={item.profile_path} />
+                                        </Shimmer>
+                                    </TouchableOpacity>
+                                )}
                             />
                         </View>
                         <HR />
 
                         <View>
                             <Text style={{ fontSize: 18, marginBottom: 5 }}>Trailer</Text>
-                            <ScrollView horizontal>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                                 {videos.map(item => (
                                     <View key={item.id} style={videoContainer}>
                                         <Shimmer visible={!videosLoading}>
                                             <YouTubeUI
                                                 id={item.key}
+                                                maxResults={videos.length}
                                             />
                                         </Shimmer>
                                     </View>
                                 ))}
-                                 
+
                             </ScrollView>
                         </View>
                         <HR />
@@ -200,4 +213,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Detail;
+export default withNavigation(Detail);

@@ -50,7 +50,7 @@ class Feature extends Component {
             <View>
                 <View style={title}>
                     <Title text={this.props.title} type="heading" />
-                    <TouchableOpacity onPress={this.goToListView}>
+                    <TouchableOpacity disabled={movies[0].poster_path === '' && movies[0].title === '' && movies[0].vote_average === 0} onPress={this.goToListView}>
                         <Text style={text}>See all</Text>
                     </TouchableOpacity>
                 </View>

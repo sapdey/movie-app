@@ -15,6 +15,7 @@ export default class YoutubeUI extends Component {
                     videoId={this.props.id}
                     apiKey="AIzaSyBAzJnN-YKBQOWvkRt-gK1sbnFoWmSZsAM"
                     style={{ height: 200 }}
+                    maxResults={this.props.maxResults}
                     // onReady={e => this.setState({ isReady: true })}
                     // onChangeState={e => this.setState({ status: e.state })}
                 />

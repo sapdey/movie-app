@@ -26,9 +26,9 @@ class Home extends Component {
                     <Feature db='movie' type='now_playing' title="Now Playing" />
 
                     <Feature db='movie' type="popular" title="Popular" />
-                    <Hr />
-                    <Text>TV</Text>
-                    <Feature db='tv' type="airing_today" title="Airing Today" />
+                    {/* <Hr /> */}
+                    {/* <Text>TV</Text>
+                    <Feature db='tv' type="airing_today" title="Airing Today" /> */}
                 </ScrollView>
             </View>
         )

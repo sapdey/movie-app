@@ -6,6 +6,7 @@ import Home from './Home/';
 import Detail from './Detail';
 import ListView from './List';
 import Search from './Search';
+import Person from './Person';
 
 class App extends Component {
 
@@ -45,6 +46,10 @@ const RootStack = createStackNavigator(
         },
         Search: {
             screen: Search,
+            header: null
+        },
+        Person: {
+            screen: Person,
             header: null
         }
     },

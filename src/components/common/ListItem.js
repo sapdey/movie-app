@@ -29,7 +29,7 @@ class ListItem extends PureComponent {
             <View>
                 {!column
                     ? <View style={container}>
-                        <TouchableOpacity onPress={this.navigateToDetail(item)}>
+                        <TouchableOpacity disabled={poster_path === '' && title === '' && vote_average === 0} onPress={this.navigateToDetail(item)}>
                             <View style={image}>
                                 <Shimmer visible={poster_path !== ''} style={[image, { borderRadius: 0 }]}>
                                     <Img src={poster_path} />
