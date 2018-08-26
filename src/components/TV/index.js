@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types'
-import Feature from './Feature';
+import Feature from '../Home/Feature';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Hr from '../common/hr';
 
-class Home extends Component {
+class TV extends Component {
     static navigationOptions = ({ navigation }) => ({
         headerTitle: 'MovieDB',
         headerRight: (
@@ -14,8 +14,7 @@ class Home extends Component {
                 style={{ width: 40, height: 40, borderRadius: 50, flex: 1, justifyContent: 'center', alignItems: 'center', marginRight: 10 }}
             >
                 <Ionicons style={{ fontSize: 22 }} name='ios-search' />
-            </TouchableOpacity>
-        ),
+            </TouchableOpacity>),
         headerStyle: {
             elevation: 0
         }
@@ -24,9 +23,8 @@ class Home extends Component {
         return (
             <View style={styles.list}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <Feature db='movie' type='now_playing' title="Now Playing" size="heading" />
-                    <Hr />
-                    <Feature db='movie' type="popular" title="Popular" size="heading" />
+                    <Feature db='tv' type="airing_today" title="Airing Today" size="heading" />
+                    <Feature db='tv' type="popular" title="Popular" size="heading" />
                 </ScrollView>
             </View>
         )
@@ -44,4 +42,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Home;
+export default TV;

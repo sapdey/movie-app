@@ -1,21 +1,25 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { createStackNavigator, SafeAreaView } from 'react-navigation';
+import { createStackNavigator, createBottomTabNavigator, SafeAreaView } from 'react-navigation';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import Home from './Home/';
 import Detail from './Detail';
 import ListView from './List';
-import Search from './Search';
+import SearchTab from './Search';
 import Person from './Person';
+import TV from './TV';
+import YoutubeUI from './Youtube';
 
 class App extends Component {
 
     render() {
         return (
             // <SafeAreaView style={{ flex: 1 }}>
-                <View style={styles.container}>
-                    <RootStack />
-                </View>
+            <View style={styles.container}>
+                {/* <RootStack /> */}
+            </View>
             // </SafeAreaView>
         )
     }
@@ -24,14 +28,62 @@ class App extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // backgroundColor: '#fafafa'
+        backgroundColor: '#fff'
     }
 });
 
-const RootStack = createStackNavigator(
+const HomeTab = createStackNavigator(
     {
         Home: {
             screen: Home,
+            navigationOptions: () => ({
+                headerMode: 'none',
+                // header: null,
+            })
+        },
+        Detail: {
+            screen: Detail,
+            headerMode: 'float'
+        },
+        List: {
+            screen: ListView
+        },
+        Searchtab: {
+            screen: SearchTab,
+            header: null
+        },
+        Person: {
+            screen: Person,
+            header: null
+        },
+        Youtube: {
+            screen: YoutubeUI,
+            header: 'none'
+        }
+    },
+    {
+        headerMode: 'screen'
+    }
+    // {
+    //     initialRouteName: 'Home',
+    // }
+);
+
+HomeTab.navigationOptions = ({ navigation }) => {
+    if (navigation.state.index === 0) {
+        return {
+            tabBarVisible: true,
+        };
+    }
+    return {
+        tabBarVisible: false,
+    };
+};
+
+const TVTab = createStackNavigator(
+    {
+        TV: {
+            screen: TV,
             navigationOptions: () => ({
                 headerMode: 'none',
                 // header: null,
@@ -44,18 +96,64 @@ const RootStack = createStackNavigator(
         List: {
             screen: ListView
         },
-        Search: {
-            screen: Search,
+        Searchtab: {
+            screen: SearchTab,
             header: null
         },
         Person: {
             screen: Person,
             header: null
+        },
+        Youtube: {
+            screen: YoutubeUI,
+            navigationOptions: () => ({
+                headerMode: 'none',
+                // header: null,
+            })
         }
     },
-    {
-        initialRouteName: 'Home',
-    }
+    // {
+    //     initialRouteName: 'TV',
+    // }
 );
 
-export default App;
+TVTab.navigationOptions = ({ navigation }) => {
+    if (navigation.state.index === 0) {
+        return {
+            tabBarVisible: true,
+        };
+    }
+    return {
+        tabBarVisible: false,
+    };
+};
+
+export default createBottomTabNavigator({
+    Movies: HomeTab,
+    TV: TVTab
+},
+    {
+        navigationOptions: ({ navigation }) => ({
+            tabBarIcon: ({ focused, tintColor }) => {
+                const { routeName } = navigation.state;
+                // let iconName;
+                if (routeName === 'Movies') {
+                    iconName = 'local-movies';
+                    return <MaterialIcons name='local-movies' size={25} color={tintColor} />
+                } else if (routeName === 'TV') {
+                    return <Ionicons name='md-tv' size={25} color={tintColor} />;
+                }
+            },
+        }),
+        tabBarOptions: {
+            activeTintColor: 'tomato',
+            inactiveTintColor: 'gray',
+            labelStyle: {
+                fontSize: 14,
+              },
+        },
+    },
+    {
+        initialRouteName: 'Movies',
+    }
+);

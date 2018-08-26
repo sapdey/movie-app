@@ -1,4 +1,4 @@
-import { key, url } from './constants';
+import { key, url, youtubeKey } from './constants';
 
 export default {
     async fetchMovies(db, type, count=1) {
@@ -23,4 +23,16 @@ export default {
             console.error(error);
         }
     },
+    async youtube(id) {
+        try {
+            let response = await fetch(
+                `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${id}&key=${youtubeKey}`
+            );
+            let responseJson = await response.json();
+            console.log(responseJson);
+            
+        } catch (error) {
+            console.error(error);
+        }
+    }
 }

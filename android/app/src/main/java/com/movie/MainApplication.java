@@ -5,7 +5,6 @@ import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.inprogress.reactnativeyoutube.ReactNativeYouTube;
-import com.entria.views.RNViewOverflowPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -29,7 +28,6 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new VectorIconsPackage(),
             new ReactNativeYouTube(),
-            new RNViewOverflowPackage(),
             new LinearGradientPackage()
       );
     }

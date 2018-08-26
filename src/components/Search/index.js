@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, AsyncStorage  } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, AsyncStorage } from 'react-native';
 import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import ajax from '../../ajax';
 import ListItem from '../common/ListItem';
+import Feature from '../Home/Feature';
 
-class Search extends Component {
+class SearchTab extends Component {
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
         return {
@@ -37,7 +38,7 @@ class Search extends Component {
     componentDidMount() {
         this.props.navigation.setParams({
             handleThis: this.handleChange,
-            
+
         });
     }
 
@@ -96,13 +97,18 @@ class Search extends Component {
         return (
             <View style={container}>
                 <View>
-                    <FlatList
-                        data={results}
-                        keyExtractor={(item, index) => item.id.toString()}
-                        renderItem={this._renderItem}
-                        onEndReached={this.handleLoadMore}
-                        onEndThreshold={30}
-                    />
+                    {
+                        results.length > 0
+                            ? <FlatList
+                                data={results}
+                                keyExtractor={(item, index) => item.id.toString()}
+                                renderItem={this._renderItem}
+                                onEndReached={this.handleLoadMore}
+                                onEndThreshold={30}
+                            />
+                            : <Feature  db='movie' type='now_playing' title="Now Playing" size="heading" />
+                    }
+
                 </View>
             </View>
         )
@@ -110,7 +116,10 @@ class Search extends Component {
 }
 
 const styles = StyleSheet.create({
-
+    container: {
+        backgroundColor: '#fff',
+        flex: 1
+    }
 });
 
-export default Search;
+export default SearchTab;
