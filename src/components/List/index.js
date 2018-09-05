@@ -7,7 +7,7 @@ import ajax from '../../ajax';
 
 
 class ListView extends PureComponent {
-   
+
     constructor(props) {
         super(props);
         this.state = {
@@ -18,19 +18,21 @@ class ListView extends PureComponent {
 
     _renderItem({ item }) {
         return (
-            <ListItem item={item} column db='movie'/>
+            <ListItem item={item} column db='movie' />
         );
     }
 
     handleLoadMore = async () => {
-        let type = this.props.navigation.getParam('type', 'search');
-        let newMovies = await ajax.fetchMovies('movie', type, this.count);
+        if (!this.props.navigation.getParam('loadMore', false)) {
+            let type = this.props.navigation.getParam('type', 'search');
+            let newMovies = await ajax.fetchMovies('movie', type, this.count);
 
-        this.setState({
-            movies: this.state.movies.concat(...newMovies.results),
-        }, () => {
-            this.count++;
-        })
+            this.setState({
+                movies: this.state.movies.concat(...newMovies.results),
+            }, () => {
+                this.count++;
+            })
+        }
     }
 
     render() {
@@ -39,10 +41,10 @@ class ListView extends PureComponent {
             <View>
                 <FlatList
                     data={movies}
-                    keyExtractor={(item, index) => item.id.toString()}
+                    keyExtractor={(item, index) => index.toString()}
                     renderItem={this._renderItem}
                     onEndReached={this.handleLoadMore}
-                    onEndThreshold={30}
+                    onEndThreshold={0.3}
                 />
             </View>
         )

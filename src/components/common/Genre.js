@@ -18,8 +18,6 @@ export default Genre = ({ ids }) => (
     <View style={styles.genres}>
         {
             ids.length > 0 && ids.map((item, index) => {
-                console.log(item, movieGenres[item]);
-                
                 if (movieGenres[item] === 'undefined' || index > 2) {
                     return;
                 }

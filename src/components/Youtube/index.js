@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import Youtube from "react-native-youtube";
 import ajax from '../../ajax';
 import { youtubeKey } from '../../constants';
+import Lightbox from 'react-native-lightbox';
 
 export default class YoutubeUI extends Component {
     static navigationOptions = { title: 'Youtube', header: null }
@@ -21,15 +22,16 @@ export default class YoutubeUI extends Component {
         let { video, isReady } = this.state;
         return (
             <View style={styles.video}>
-                <Youtube
-                    videoId={video.key}
-                    apiKey={youtubeKey}
-                    style={{ width: '100%', flex: 1 }}
-                    // play={isReady}
-                    fullscreen
-                    onReady={e => this.setState({ isReady: true })}
-                // onChangeState={e => this.setState({ status: e.state })}
-                />
+                {/* <Lightbox> */}
+                    <Youtube
+                        videoId={video.key}
+                        apiKey={youtubeKey}
+                        style={{ width: '100%', height: 300 }}
+                        // play={isReady}
+                        onReady={e => this.setState({ isReady: true })}
+                    // onChangeState={e => this.setState({ status: e.state })}
+                    />
+                {/* </Lightbox> */}
             </View>
         )
     }

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
 const Img = (props) => {
     const src = 'https://image.tmdb.org/t/p/w500' + props.src;
     return (
-        <Image style={styles.image} source={{ uri: src }} />
+        <Image style={styles.image} source={{ uri: src }} resizeMode={props.resizeMode} />
     )
 };
 

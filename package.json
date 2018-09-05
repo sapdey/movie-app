@@ -10,6 +10,7 @@
     "prop-types": "^15.6.2",
     "react": "16.4.1",
     "react-native": "0.56.0",
+    "react-native-lightbox": "^0.8.0",
     "react-native-linear-gradient": "^2.4.0",
     "react-native-snap-carousel": "^3.7.2",
     "react-native-star-rating": "^1.0.9",

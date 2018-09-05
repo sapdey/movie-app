@@ -10,6 +10,7 @@ import ListView from './List';
 import SearchTab from './Search';
 import Person from './Person';
 import TV from './TV';
+import Favorites from './Favorite';
 import YoutubeUI from './Youtube';
 
 class App extends Component {
@@ -32,105 +33,150 @@ const styles = StyleSheet.create({
     }
 });
 
-const HomeTab = createStackNavigator(
-    {
-        Home: {
-            screen: Home,
-            navigationOptions: () => ({
-                headerMode: 'none',
-                // header: null,
-            })
-        },
-        Detail: {
-            screen: Detail,
-            headerMode: 'float'
-        },
-        List: {
-            screen: ListView
-        },
-        Searchtab: {
-            screen: SearchTab,
-            header: null
-        },
-        Person: {
-            screen: Person,
-            header: null
-        },
-        Youtube: {
-            screen: YoutubeUI,
-            header: 'none'
+// const HomeTab = createStackNavigator(
+//     {
+//         Home: {
+//             screen: Home,
+//             navigationOptions: () => ({
+//                 headerMode: 'none',
+//                 // header: null,
+//             })
+//         },
+//         Detail: {
+//             screen: Detail,
+//             headerMode: 'float'
+//         },
+//         List: {
+//             screen: ListView
+//         },
+//         Searchtab: {
+//             screen: SearchTab,
+//             header: null
+//         },
+//         Person: {
+//             screen: Person,
+//             header: null
+//         },
+//         Youtube: {
+//             screen: YoutubeUI,
+//             header: 'none'
+//         }
+//     },
+//     {
+//         headerMode: 'screen'
+//     }
+// );
+
+// HomeTab.navigationOptions = ({ navigation }) => {
+//     if (navigation.state.index === 0) {
+//         return {
+//             tabBarVisible: true,
+//         };
+//     }
+//     return {
+//         tabBarVisible: false,
+//     };
+// };
+
+// const TVTab = createStackNavigator(
+//     {
+//         TV: {
+//             screen: TV,
+//             navigationOptions: () => ({
+//                 headerMode: 'none',
+//                 // header: null,
+//             })
+//         },
+//         Detail: {
+//             screen: Detail,
+//             header: null
+//         },
+//         List: {
+//             screen: ListView
+//         },
+//         Searchtab: {
+//             screen: SearchTab,
+//             header: null
+//         },
+//         Person: {
+//             screen: Person,
+//             header: null
+//         },
+//         Youtube: {
+//             screen: YoutubeUI,
+//             navigationOptions: () => ({
+//                 headerMode: 'none',
+//                 // header: null,
+//             })
+//         }
+//     },
+// );
+
+// TVTab.navigationOptions = ({ navigation }) => {
+//     if (navigation.state.index === 0) {
+//         return {
+//             tabBarVisible: true,
+//         };
+//     }
+//     return {
+//         tabBarVisible: false,
+//     };
+// };
+
+const createMyNavigation = (stack) => {
+    let nav = createStackNavigator(
+        {
+            stack: {
+                screen: stack,
+                navigationOptions: () => ({
+                    headerMode: 'none',
+                    // header: null,
+                })
+            },
+            Detail: {
+                screen: Detail,
+                header: null
+            },
+            List: {
+                screen: ListView
+            },
+            Searchtab: {
+                screen: SearchTab,
+                header: null
+            },
+            Person: {
+                screen: Person,
+                header: null
+            },
+            Youtube: {
+                screen: YoutubeUI,
+                navigationOptions: () => ({
+                    headerMode: 'none',
+                    // header: null,
+                })
+            }
         }
-    },
-    {
-        headerMode: 'screen'
-    }
-    // {
-    //     initialRouteName: 'Home',
-    // }
-);
-
-HomeTab.navigationOptions = ({ navigation }) => {
-    if (navigation.state.index === 0) {
-        return {
-            tabBarVisible: true,
-        };
-    }
-    return {
-        tabBarVisible: false,
-    };
-};
-
-const TVTab = createStackNavigator(
-    {
-        TV: {
-            screen: TV,
-            navigationOptions: () => ({
-                headerMode: 'none',
-                // header: null,
-            })
-        },
-        Detail: {
-            screen: Detail,
-            header: null
-        },
-        List: {
-            screen: ListView
-        },
-        Searchtab: {
-            screen: SearchTab,
-            header: null
-        },
-        Person: {
-            screen: Person,
-            header: null
-        },
-        Youtube: {
-            screen: YoutubeUI,
-            navigationOptions: () => ({
-                headerMode: 'none',
-                // header: null,
-            })
+    );
+    nav.navigationOptions = ({ navigation }) => {
+        if (navigation.state.index === 0) {
+            return {
+                tabBarVisible: true,
+            };
         }
-    },
-    // {
-    //     initialRouteName: 'TV',
-    // }
-);
-
-TVTab.navigationOptions = ({ navigation }) => {
-    if (navigation.state.index === 0) {
         return {
-            tabBarVisible: true,
-        };
+            tabBarVisible: false,
+        }
     }
-    return {
-        tabBarVisible: false,
-    };
-};
+
+    return nav;
+}
+
+
 
 export default createBottomTabNavigator({
-    Movies: HomeTab,
-    TV: TVTab
+    Movies: createMyNavigation(Home),
+    TV: createMyNavigation(TV),
+    Favorites: createMyNavigation(Favorites)
 },
     {
         navigationOptions: ({ navigation }) => ({
@@ -142,6 +188,8 @@ export default createBottomTabNavigator({
                     return <MaterialIcons name='local-movies' size={25} color={tintColor} />
                 } else if (routeName === 'TV') {
                     return <Ionicons name='md-tv' size={25} color={tintColor} />;
+                } else if (routeName === 'Favorites') {
+                    return <MaterialIcons name='favorite' size={25} color={tintColor} />
                 }
             },
         }),
@@ -150,9 +198,11 @@ export default createBottomTabNavigator({
             inactiveTintColor: 'gray',
             labelStyle: {
                 fontSize: 14,
-              },
+            },
         },
+        // lazy: false
     },
+
     {
         initialRouteName: 'Movies',
     }

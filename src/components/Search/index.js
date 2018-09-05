@@ -106,7 +106,7 @@ class SearchTab extends Component {
                                 onEndReached={this.handleLoadMore}
                                 onEndThreshold={30}
                             />
-                            : <Feature  db='movie' type='now_playing' title="Now Playing" size="heading" />
+                            : <Feature db='trending' type='movie/day' title="Trending" size="stitle" />
                     }
 
                 </View>

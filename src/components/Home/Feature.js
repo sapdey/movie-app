@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, FlatList, TouchableOpacity, AsyncStorage } from 'react-native';
 import PropTypes from 'prop-types';
 import Carousel from 'react-native-snap-carousel';
 import { withNavigation } from 'react-navigation';
@@ -15,20 +15,39 @@ class Feature extends Component {
     }
     state = {
         movies: [
-            {poster_path: '', title: '', vote_average: -1, id: 0},
-            {poster_path: '', title: '', vote_average: -1, id: 1},
-            {poster_path: '', title: '', vote_average: -1, id: 2},
-            {poster_path: '', title: '', vote_average: -1, id: 3},
-            {poster_path: '', title: '', vote_average: -1, id: 4}
-        ]
+            { poster_path: '', title: '', vote_average: -1, id: 0 },
+            { poster_path: '', title: '', vote_average: -1, id: 1 },
+            { poster_path: '', title: '', vote_average: -1, id: 2 },
+            { poster_path: '', title: '', vote_average: -1, id: 3 },
+            { poster_path: '', title: '', vote_average: -1, id: 4 }
+        ],
+        db: this.props.db === 'trending' ? 'movie' : this.props.db // handled on for trending search
     }
     async componentDidMount() {
-        this.setState({ loading: true})
-        const movies = await ajax.fetchMovies(this.props.db, this.props.type);
-        this.setState({
-            movies: movies.results,
-            loading: false
-        });
+        if (this.props.type) {
+            this.setState({ loading: true })
+            const movies = await ajax.fetchMovies(this.props.db, this.props.type);
+            this.setState({
+                movies: movies.results,
+                loading: false
+            });
+        } else {
+            let movies = await AsyncStorage.getItem(this.props.db);
+            movies = JSON.parse(movies);
+            if (movies) {
+                this.setState({ movies });
+            }
+        }
+    }
+
+    async componentWillReceiveProps(nextProps) {
+        if (nextProps.render) {
+            let movies = await AsyncStorage.getItem(this.props.db);
+            movies = JSON.parse(movies);
+            if (movies) {
+                this.setState({ movies });
+            }
+        }
     }
 
     // _renderItem({ item }) {
@@ -41,6 +60,7 @@ class Feature extends Component {
         this.props.navigation.navigate('List', {
             type: this.props.type,
             movies: this.state.movies,
+            loadMore: this.props.render
         });
     }
     render() {
@@ -50,7 +70,7 @@ class Feature extends Component {
             <View>
                 <View style={title}>
                     <Title text={this.props.title} size={this.props.size} />
-                    <TouchableOpacity disabled={movies[0].poster_path === '' && movies[0].title === '' && movies[0].vote_average === 0} onPress={this.goToListView}>
+                    <TouchableOpacity disabled={movies.length > 0 && movies[0].poster_path === '' && movies[0].title === '' && movies[0].vote_average === 0} onPress={this.goToListView}>
                         <Text style={text}>See all</Text>
                     </TouchableOpacity>
                 </View>
@@ -70,9 +90,10 @@ class Feature extends Component {
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(item, index) => item.id.toString()}
+                    removeClippedSubviews={false}
                     // renderItem={this._renderItem}
                     renderItem={({ item }) => (
-                        <ListItem style={styles.item} item={item} db={this.props.db}/>
+                        <ListItem style={styles.item} item={item} db={this.state.db} />
                     )}
                 />
             </View>
