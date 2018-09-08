@@ -7,6 +7,7 @@ import Title from '../common/Title';
 import Shimmer from "../common/Shimmer";
 import ListItem from "../common/ListItem";
 import Images from '../common/Images';
+import FavoriteButton from '../common/FavoriteButton';
 
 class Person extends Component {
 
@@ -17,15 +18,23 @@ class Person extends Component {
             details: {},
             credits: {},
             images: [],
-            loading: true
+            loading: true,
         }
+        this.db = "celeb"
     }
 
     async componentDidMount() {
-        const details = await ajax.fetchMovies('person', this.state.person.id);
-        const credits = await ajax.fetchMovies('person', this.state.person.id + '/combined_credits');
-        const images = await ajax.fetchMovies('person', this.state.person.id + '/images');
-        this.setState({ details, credits, images: images.profiles, loading: false });
+        const details = ajax.fetchMovies('person', this.state.person.id)
+        const credits = ajax.fetchMovies('person', this.state.person.id + '/combined_credits')
+        const images = ajax.fetchMovies('person', this.state.person.id + '/images')
+        Promise.all([details, credits, images]).then(results => {
+            this.setState({ 
+                details: results[0],
+                credits: results[1],
+                images: results[2].profiles,
+                loading: false
+            })
+        })
     }
 
     navigateToPerson = (item) => () => {
@@ -33,8 +42,7 @@ class Person extends Component {
     }
 
     render() {
-        console.log(this.state);
-        let { credits: { cast }, images, loading } = this.state;
+        let { credits: { cast }, images, loading, person } = this.state;
         let { profile_path, name, } = this.state.person;
         let { biography, gender, birthday, place_of_birth } = this.state.details
         let { imageContainer, posterImage, mainContainer, titleContainer, titleLine, description, genre, genress, videoContainer, youtubeLogo } = styles;
@@ -54,7 +62,7 @@ class Person extends Component {
                                 <Shimmer visible={!loading} style={{ height: 12, width: 50 }}>
                                     <Text>{gender === 1 ? 'Female' : 'Male'}</Text>
                                 </Shimmer>
-
+                                <FavoriteButton db={this.db} item={person} />
                             </View>
                         </View>
                         <View style={description}>

@@ -26,27 +26,28 @@ class Feature extends Component {
     async componentDidMount() {
         if (this.props.type) {
             this.setState({ loading: true })
-            const movies = await ajax.fetchMovies(this.props.db, this.props.type);
-            this.setState({
-                movies: movies.results,
-                loading: false
-            });
+            ajax.fetchMovies(this.props.db, this.props.type)
+                .then(movies => this.setState({ movies: movies.results, loading: false }));
         } else {
-            let movies = await AsyncStorage.getItem(this.props.db);
-            movies = JSON.parse(movies);
-            if (movies) {
-                this.setState({ movies });
-            }
+            AsyncStorage.getItem(this.props.db)
+                .then(movies => {
+                    movies = JSON.parse(movies);
+                    if (movies) {
+                        this.setState({ movies });
+                    }
+                })
         }
     }
 
     async componentWillReceiveProps(nextProps) {
         if (nextProps.render) {
-            let movies = await AsyncStorage.getItem(this.props.db);
-            movies = JSON.parse(movies);
-            if (movies) {
-                this.setState({ movies });
-            }
+            AsyncStorage.getItem(this.props.db)
+                .then(movies => {
+                    movies = JSON.parse(movies);
+                    if (movies) {
+                        this.setState({ movies });
+                    }
+                })
         }
     }
 

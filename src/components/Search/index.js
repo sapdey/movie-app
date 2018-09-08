@@ -54,7 +54,7 @@ class SearchTab extends Component {
         }
         this.timeoutId = setTimeout(() => {
             this.searchText();
-        }, 200);
+        }, 500);
     }
 
     async searchText() {
@@ -73,10 +73,10 @@ class SearchTab extends Component {
         }
         else if (item.media_type === "tv") {
             return <ListItem item={item} db='tv' column />
-        }
-        // } else if (r.media_type === 'person') {
+        } 
+        // else if (item.media_type === 'person') {
         //     return <View>
-        //         <Text>{r.name}</Text>
+        //         <Text>{item.name}</Text>
         //     </View>
         // }
     }

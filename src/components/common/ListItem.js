@@ -30,7 +30,7 @@ class ListItem extends PureComponent {
         let { container, image, titleView, titleLine, columnContainer, columnImage, description, genress, genre } = styles;
 
         return (
-            <View style={{ backgroundColor: '#fff'}}>
+            <View style={{ backgroundColor: '#fff' }}>
                 {!column
                     ? <View style={container}>
                         <TouchableOpacity disabled={poster_path === '' && title === '' && vote_average === 0} onPress={this.navigateToDetail(item)}>
@@ -58,17 +58,15 @@ class ListItem extends PureComponent {
                                 <Img src={poster_path} />
                             </View>
                             <View style={columnContainer}>
-                                <View style={{ flex: 3 }}>
+                                <View style={{ width: 110 }}>
                                 </View>
                                 <View style={description}>
                                     <View>
                                         <Title lines={2} style={titleLine} size="stitle" text={title ? title : original_name} />
                                         <Starrating votes={vote_average} />
                                     </View>
-                                    <View style={genress}>
-                                        {/* <Text> */}
+                                    <View onStartShouldSetResponder={() => true} style={genress}>
                                         <Genre ids={genre_ids} />
-                                        {/* </Text> */}
                                     </View>
                                 </View>
                             </View>
@@ -83,31 +81,15 @@ class ListItem extends PureComponent {
 const styles = StyleSheet.create({
     container: {
         margin: 5,
-        // padding: 5,
-        // backgroundColor: '#eee',
         borderRadius: 10,
-        // borderWidth: 1,
-        // borderColor: '#eee',
-        // border: '1px solid rgba(0,0,0,.04)',
-        // width: 210,
         height: 395,
-        // flex: 1,
-        // alignItems: 'stretch'
     },
     image: {
         backgroundColor: '#eee',
-        // flex: 1,
         width: 210,
         height: 310,
         borderRadius: 10,
-        // borderColor: 'rgba(0,0,0,.04)',
-        // borderWidth: 1,
-        // borderStyle: 'solid',
         overflow: 'hidden',
-        // shadowColor: 'rgba(46,61,73,.2)',
-        // shadowOffset: {width: 5, height: 5 },
-        // shadowRadius: 25,
-        // shadowOpacity: 0.8
     },
     titleView: {
         flexDirection: 'row',
@@ -122,7 +104,6 @@ const styles = StyleSheet.create({
     columnContainer: {
         backgroundColor: '#fff',
         height: 125,
-        // width: '100%',
         borderColor: 'rgba(0,0,0,.04)',
         borderWidth: 1,
         borderStyle: 'solid',
@@ -149,17 +130,17 @@ const styles = StyleSheet.create({
     },
     genress: {
         flexDirection: 'row',
-        // flexWrap: 'wrap'
     },
     genre: {
         backgroundColor: '#e7e7e7',
         padding: 5,
         marginRight: 5,
-        marginBottom: 5
     },
     description: {
-        flex: 7,
-        justifyContent: 'space-around'
+        flex: 1,
+        justifyContent: 'space-between',
+        paddingTop: 5,
+        paddingBottom: 15
     }
 });
 

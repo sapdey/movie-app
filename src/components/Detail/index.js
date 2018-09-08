@@ -14,6 +14,7 @@ import Genre from '../common/Genre';
 import Feature from '../Home/Feature';
 import Images from '../common/Images';
 import util from '../../util';
+import FavoriteButton from '../common/FavoriteButton';
 
 let fullWidth = Dimensions.get('window').width;
 class Detail extends Component {
@@ -34,10 +35,7 @@ class Detail extends Component {
     state = {
         movie: this.props.navigation.state.params.item,
         db: this.props.navigation.state.params.db,
-        credits: {
-            cast: [],
-            crew: []
-        },
+        cast: [],
         castLoading: true,
         directorLoading: true,
         videosLoading: true,
@@ -57,28 +55,26 @@ class Detail extends Component {
 
     async componentDidMount() {
         // this.setState({ castLoading: true, directorLoading: true });
-        let present = await util.isPresent(this.state.db, this.state.movie);
-        (present)
-            ? this.setState({ watchlist: 'Remove from', watchListButton: false })
-            : this.setState({ watchlist: 'Add to', watchListButton: false });
-        
-        const credits = await ajax.fetchMovies(this.state.db, this.state.movie.id + '/credits');
-        this.setState({ credits, castLoading: false }, () => {
-            this.getDirector();
+        ajax.fetchMovies(this.state.db, this.state.movie.id + '/credits').then(credits => {
+            console.log(this.state.db);
+            this.setState({
+                cast: credits.cast, castLoading: false,
+                director: this.state.db === 'movie' ? this.getDirector(credits.crew) : '',
+                directorLoading: false
+            });
         });
-        const videos = await ajax.fetchMovies(this.state.db, this.state.movie.id + '/videos');
-        const images = await ajax.fetchMovies(this.state.db, this.state.movie.id + '/images');
-        this.setState({ videos: videos.results, videosLoading: false, images });
+        const videos = ajax.fetchMovies(this.state.db, this.state.movie.id + '/videos');
+        const images = ajax.fetchMovies(this.state.db, this.state.movie.id + '/images');
+        Promise.all([videos, images]).then(result => {
+            this.setState({ videos: result[0].results, videosLoading: false, images: result[1] });
+        });
 
     }
 
-    async getDirector() {
-        if (this.state.credits.crew && this.state.credits.crew.length > 0) {
-            await this.state.credits.crew.forEach((item) => {
-                if (item.job === 'Director') {
-                    this.setState({ director: item.name, directorLoading: false });
-                }
-            })
+    getDirector(crew) {
+        if (crew && crew.length > 0) {
+            const director = crew.find(item => item.job === 'Director');
+            return director.name;
         }
     }
 
@@ -94,20 +90,9 @@ class Detail extends Component {
         this.props.navigation.navigate('Youtube', { video });
     }
 
-    addRemoveFavorite = async () => {
-        if (this.state.watchlist === 'Add to') {
-            await util.add(this.state.db, this.state.movie);
-            this.setState({ watchlist: 'Remove from' })
-        } else {
-            await util.remove(this.state.db, this.state.movie);
-            this.setState({ watchlist: 'Add to' })
-        }
-
-    }
-
     render() {
         let { belongs_to_collection = {}, backdrop_path, id, poster_path, title, runtime, vote_average, overview, genre_ids, release_date, original_name, first_air_date } = this.state.movie;
-        let { credits: { cast }, director, movieLoading, directorLoading, videos, videosLoading, db, images, watchlist } = this.state;
+        let { movie, cast, director, movieLoading, directorLoading, videos, videosLoading, db, images, watchlist, watchListButton } = this.state;
         let { imageContainer, posterImage, mainContainer, titleContainer, titleLine, description, genre, genress, videoContainer, youtubeLogo, wishlistButton } = styles;
         (poster_path === undefined) ? backdrop_path : poster_path;
         return (
@@ -130,13 +115,7 @@ class Detail extends Component {
                                     <Genre ids={genre_ids} />
                                     {/* </Text> */}
                                 </View>
-                                <Shimmer visible={watchlist} style={{ width: 160, height: 25, marginTop: 5, borderRadius: 1 }}>
-                                    <TouchableOpacity onPress={this.addRemoveFavorite}>
-                                        <View style={wishlistButton}>
-                                            <Text style={{ color: '#ffffff' }}>{watchlist} favorites</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </Shimmer>
+                                <FavoriteButton db={db} item={movie} />
                             </View>
                         </View>
                         <View style={description}>

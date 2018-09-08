@@ -44,6 +44,8 @@ class Favorites extends Component {
                     <Feature db='movie' type={false} title="Watchlist Movies" size="heading" render={this.state.render} />
                     <Hr />
                     <Feature db='tv' type={false} title="Watchlist TV" size="heading" render={this.state.render} />
+                    {/* <Hr />
+                    <Feature db='celeb' type={false} title="Favorite Celebrity" size="heading" render={this.state.render} /> */}
                 </ScrollView>
             </View>
         )

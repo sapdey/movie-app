@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
 import { movieGenres } from '../../constants';
 
@@ -12,19 +12,16 @@ const styles = StyleSheet.create({
         padding: 5,
         marginRight: 5
     },
-  });
+});
 
 export default Genre = ({ ids }) => (
     <View style={styles.genres}>
-        {
-            ids.length > 0 && ids.map((item, index) => {
-                if (movieGenres[item] === 'undefined' || index > 2) {
-                    return;
-                }
-                return (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {
+                ids.length > 0 && ids.map((item, index) => (
                     <Text key={item} style={styles.genre}>{movieGenres[item]}</Text>
-                )
-            })
-        }
+                ))
+            }
+        </ScrollView>
     </View>
 )
